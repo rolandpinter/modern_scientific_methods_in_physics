@@ -3,9 +3,9 @@
 int main()
 {
     /// Create a vector filled with random numbers
-    size_t N = 16777216; // 8^8
+    size_t N = 16777216; // 8^8 = 16777216
     float lower_limit = 0.0;
-    float upper_limit = 12.0;
+    float upper_limit = 100.0;
     std::vector<float> vec_of_random_numbers = create_random_numbers(N, lower_limit, upper_limit);
 
     /// Log the init values
@@ -30,5 +30,15 @@ int main()
 
     float tolerance = 1e-3;
     compare_results(mean_seq, mean_par, tolerance, "mean");
+
+    /// Compute deviation sequentially
+    stat_object.calc_deviation_sequential();
+
+    /// Get the computed deviation
+    float dev_seq = stat_object.deviation_sequential();
+    
+    /// Log the deviation values to the consol
+    std::cout << "Deviation computed sequentially: " << dev_seq << std::endl;
+
 
 }

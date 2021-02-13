@@ -21,8 +21,13 @@ std::vector<float> create_random_numbers(size_t N, float lower_limit, float uppe
 float compute_mean(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
 {
     float sum = std::accumulate(it_start, it_end, 0.0);
-    float mean = sum / std::distance(it_start, it_end);
-    return mean;
+    return sum / std::distance(it_start, it_end);
+}
+
+float compute_mean_var_style(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
+{
+    float sum = std::accumulate(it_start, it_end, 0.0);
+    return sum / std::distance(it_start, it_end - 1 ); // divide with N -1
 }
 
 void compare_results(float result_sequential, float result_parallel, float tolerance, std::string type_of_result)
@@ -96,7 +101,33 @@ void statistics::calc_mean_parallel()
               << elapsed_time << " microseconds!"<< std::endl; 
 }
 
+void statistics::calc_deviation_sequential()
+{
+    // Formula: SQRT[sum{ (x - mean)**2 } / N-1]
+    // I will transform this problem to a mean calculation problem
+    // - I will transform the data as: x --> (x - mean)**2
+    // - then calc the mean of it: (x - mean)**2 --> (x - mean)**2 / N - 1
+    // As a last step, take the square root: (x - mean)**2 / N  - 1 --> sqrt((x - mean)**2 / N - 1)
+
+    /// Vector to hold transformed data
+    std::vector<float> transformed_data (m_data.size());
+
+    /// Access already computed mean of the data
+    float mean = statistics::mean_sequential();
+
+    /// Transform the data as discussed above
+    std::transform(m_data.begin(), m_data.end(), transformed_data.begin(), 
+                   [&](float x){ return (x - mean ) * (x - mean );});
+    
+    /// Compute the mean of the transformed data (a.k.a. we get the variance of the data)
+    float variance = compute_mean_var_style(transformed_data.begin(), transformed_data.end());
+
+    /// Take the square root of the variance and store the deviation
+    m_deviation_sequential = sqrt(variance);
+
+}
 //------------------ Class member getter functions ------------------//
 
 float statistics::mean_sequential(){ return m_mean_sequential;}
 float statistics::mean_parallel(){ return m_mean_parallel;}
+float statistics::deviation_sequential(){ return m_deviation_sequential;}
