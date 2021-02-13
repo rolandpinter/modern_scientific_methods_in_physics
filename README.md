@@ -1,6 +1,7 @@
+## Info
 This repository is for holding my assignments for a university course called Modern Scientific Methods in Physics 1 (Korszerű Számítástechnikai módszerek a fizikában 1.).
 
-
+## big_project
 # Files
 - CMakeLists.txt: as the name suggests, it's just the cmake list :) 
 - main.cpp: main event handler of the project
@@ -10,6 +11,6 @@ This repository is for holding my assignments for a university course called Mod
 - Step 1: clone the repository
 - Step 2: build using the provided CMakeLists.txt file
 
-# Functionalities
+# Functionalities
 - The program generates N random float numbers in a given range and makes available the use of the following statistical analysis tools:
   - compute the mean of the data sequentially (using only STL algos) and parallel (using threads) and measure the execution times 
