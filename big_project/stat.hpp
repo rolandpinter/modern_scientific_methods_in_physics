@@ -8,8 +8,9 @@
 #include <string>     // for strings, of course
 #include <numeric>    // for algos like std::accumulate
 #include <algorithm>  // for more algos
+#include <random>     // for random number generation
 
-void foo();
+std::vector<float> create_random_numbers(size_t N, float lower_limit, float upper_limit);
 
 
 #endif /* stat_hpp */
