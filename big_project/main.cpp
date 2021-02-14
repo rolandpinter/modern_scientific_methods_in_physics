@@ -16,29 +16,27 @@ int main()
     /// Create a statistics object with the vector holding the random numbers
     statistics stat_object = statistics(vec_of_random_numbers);
 
-    /// Compute mean sequentially and parallel
+    /// Compute mean, deviation sequentially and parallel
     stat_object.calc_mean_sequential();
     stat_object.calc_mean_parallel();
+    stat_object.calc_deviation_sequential();
+    stat_object.calc_deviation_parallel();
     
-    /// Get the computed mean values
+    /// Get the computed values
     float mean_seq = stat_object.mean_sequential();
     float mean_par = stat_object.mean_parallel();
+    float dev_seq = stat_object.deviation_sequential();
+    float dev_par = stat_object.deviation_parallel();
 
-    /// Log the mean values to consol and compare if they are the same or not
+    /// Log the values to consol and compare if they are the same or not
+    float tolerance = 1e-4;
     std::cout << "Mean computed sequentially: " << mean_seq << std::endl;
     std::cout << "Mean computed parallel: " << mean_par << std::endl;
-
-    float tolerance = 1e-3;
     compare_results(mean_seq, mean_par, tolerance, "mean");
 
-    /// Compute deviation sequentially
-    stat_object.calc_deviation_sequential();
-
-    /// Get the computed deviation
-    float dev_seq = stat_object.deviation_sequential();
-    
-    /// Log the deviation values to the consol
     std::cout << "Deviation computed sequentially: " << dev_seq << std::endl;
+    std::cout << "Deviation computed parallel: " << dev_par << std::endl;
+    compare_results(dev_seq, dev_par, tolerance, "deviation");
 
-
+    return 0;
 }

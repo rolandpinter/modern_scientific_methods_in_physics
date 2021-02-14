@@ -18,16 +18,14 @@ std::vector<float> create_random_numbers(size_t N, float lower_limit, float uppe
     return numbers;
 }
 
-float compute_mean(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
+float compute_sum(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
 {
-    float sum = std::accumulate(it_start, it_end, 0.0);
-    return sum / std::distance(it_start, it_end);
+    return std::accumulate(it_start, it_end, 0.0);
 }
 
-float compute_mean_var_style(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
+float compute_mean(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end)
 {
-    float sum = std::accumulate(it_start, it_end, 0.0);
-    return sum / std::distance(it_start, it_end - 1 ); // divide with N -1
+    return compute_sum(it_start, it_end) / std::distance(it_start, it_end);
 }
 
 void compare_results(float result_sequential, float result_parallel, float tolerance, std::string type_of_result)
@@ -49,7 +47,7 @@ void statistics::calc_mean_sequential()
     auto start_time = std::chrono::high_resolution_clock::now();
 
     /// Compute and set the mean
-    m_mean_sequential = compute_mean(m_data.begin(), m_data.end());
+    m_mean_sequential = compute_mean(m_data.begin(), m_data.end());;
 
     /// Record end time
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -57,7 +55,6 @@ void statistics::calc_mean_sequential()
     /// Compute elapsed time
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
     std::cout << "Sequential mean for N = " << m_data.size() << " float elements took " << elapsed_time << " microseconds!"<< std::endl; 
-
 }
 
 void statistics::calc_mean_parallel()
@@ -109,8 +106,12 @@ void statistics::calc_deviation_sequential()
     // - then calc the mean of it: (x - mean)**2 --> (x - mean)**2 / N - 1
     // As a last step, take the square root: (x - mean)**2 / N  - 1 --> sqrt((x - mean)**2 / N - 1)
 
+    /// Record start time
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     /// Vector to hold transformed data
-    std::vector<float> transformed_data (m_data.size());
+    size_t N = m_data.size();
+    std::vector<float> transformed_data (N);
 
     /// Access already computed mean of the data
     float mean = statistics::mean_sequential();
@@ -120,14 +121,74 @@ void statistics::calc_deviation_sequential()
                    [&](float x){ return (x - mean ) * (x - mean );});
     
     /// Compute the mean of the transformed data (a.k.a. we get the variance of the data)
-    float variance = compute_mean_var_style(transformed_data.begin(), transformed_data.end());
+    float sum = compute_sum(transformed_data.begin(), transformed_data.end());
+    float variance = sum / (N - 1); 
 
     /// Take the square root of the variance and store the deviation
     m_deviation_sequential = sqrt(variance);
 
+    /// Record end time
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    /// Compute elapsed time
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+    std::cout << "Sequential deviation for N = " << N << " float elements took " << elapsed_time << " microseconds!"<< std::endl;
+}
+
+void statistics::calc_deviation_parallel()
+{
+    /// Record start time
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    /// Determine how many threads are supported by the host
+    int possible_number_of_threads = (int)std::thread::hardware_concurrency();
+
+    /// Create futures for the possible number of threads
+    std::vector<std::future<float> > futures(possible_number_of_threads);
+
+    /// Vector to hold transformed data
+    size_t N = m_data.size();
+    std::vector<float> transformed_data (N);
+
+    /// Access already computed mean of the data
+    float mean = statistics::mean_sequential();
+
+    /// Transform the data as discussed above
+    std::transform(m_data.begin(), m_data.end(), transformed_data.begin(), 
+                   [&](float x){ return (x - mean ) * (x - mean );});
+
+    /// Launch parallel threads to compute sums of parts of the transformed data
+    for(int n = 0; n < possible_number_of_threads; ++n)
+    {
+        // Divide the whole interval into sub parts
+        std::vector<float>::iterator it0 = transformed_data.begin() + n * N / possible_number_of_threads;
+        std::vector<float>::iterator it1 = transformed_data.begin() + (n + 1) * N / possible_number_of_threads;
+
+        // Compute the mean of the sub parts
+        futures[n] = std::async( std::launch::async, compute_sum, it0, it1);
+    }
+
+    /// Collect the parallel results
+    float sum_of_futures = std::accumulate(futures.begin(), futures.end(), 0.0,
+                                        [](float acc_value, std::future<float>& f){ return acc_value + f.get();});
+
+    /// Compute variance
+    float variance = sum_of_futures / (N - 1);
+
+    /// Compute deviation
+    m_deviation_parallel = sqrt(variance);
+
+    /// Record end time
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    /// Compute elapsed time
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+    std::cout << "Parallel deviation for N = " << N << " float elements with " << possible_number_of_threads << " threads took "
+              << elapsed_time << " microseconds!"<< std::endl; 
 }
 //------------------ Class member getter functions ------------------//
 
 float statistics::mean_sequential(){ return m_mean_sequential;}
 float statistics::mean_parallel(){ return m_mean_parallel;}
 float statistics::deviation_sequential(){ return m_deviation_sequential;}
+float statistics::deviation_parallel(){ return m_deviation_parallel;}

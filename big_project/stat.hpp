@@ -15,9 +15,9 @@
 /// Function to create N random float numbers in a given range (lower_limit, upper_limit)
 std::vector<float> create_random_numbers(size_t N, float lower_limit, float upper_limit);
 
-/// Function to compute mean
-float compute_mean(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end);           // division with N
-float compute_mean_var_style(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end); // division with N - 1
+/// Function to compute sum and mean
+float compute_sum(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end);
+float compute_mean(std::vector<float>::iterator it_start, std::vector<float>::iterator it_end);
 
 /// Function to compare results, check if they are within tolerated epsilon range
 void compare_results(float result_sequential, float result_parallel, float tolerance, std::string type_of_result);
@@ -47,11 +47,13 @@ public:
     void calc_mean_sequential();      // Compute the mean of m_data in a sequential way
     void calc_mean_parallel();        // Compute the mean of m_data in a parallel way
     void calc_deviation_sequential(); // Compute the deviation of m_data in a sequential way
+    void calc_deviation_parallel();   // Compute the deviation of m_data in a parallel way
 
     /// Class member getter functions
     float mean_sequential();      // Return m_mean_sequential
     float mean_parallel();        // Return m_mean_parallel
     float deviation_sequential(); // Return m_deviation_sequential
+    float deviation_parallel();   // Return m_deviation_parallel
 };
 
 #endif /* stat_hpp */
