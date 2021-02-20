@@ -3,6 +3,7 @@
 
 #include <stdio.h>    // for basic IO operations
 #include <iostream>   // IO stream
+#include <fstream>    // for logfile writing
 #include <vector>     // for std::vector iterable container
 #include <numeric>    // for algos like std::accumulate
 #include <algorithm>  // for more algos
@@ -30,6 +31,11 @@ private:
     float m_mean_parallel;
     float m_deviation_sequential;
     float m_deviation_parallel;
+
+    float m_execution_time_mean_sequential;      // in microseconds
+    float m_execution_time_mean_parallel;        // in microseconds
+    float m_execution_time_deviation_sequential; // in microseconds
+    float m_execution_time_deviation_parallel;   // in microseconds
     
 public:
     std::vector<float> m_data;
@@ -54,6 +60,11 @@ public:
     float mean_parallel();        // Return m_mean_parallel
     float deviation_sequential(); // Return m_deviation_sequential
     float deviation_parallel();   // Return m_deviation_parallel
+
+    float exec_time_mean_sequential(); // Return m_execution_time_mean_sequential
+    float exec_time_mean_parallel(); // Return m_execution_time_mean_parallel
+    float exec_time_deviation_sequential(); // Return m_execution_time_deviation_sequential
+    float exec_time_deviation_parallel(); // Return m_execution_time_deviation_parallel
 };
 
 #endif /* stat_hpp */

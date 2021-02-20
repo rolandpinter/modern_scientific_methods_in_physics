@@ -32,11 +32,11 @@ void compare_results(float result_sequential, float result_parallel, float toler
 {
     float relative_error = std::abs((result_sequential - result_parallel) / result_sequential);
 
-    std::cout << "###############################" << std::endl;
-    std::cout << "Relative error for " << type_of_result << " is: " << relative_error << std::endl;
+    ///std::cout << "###############################" << std::endl;
+    ///std::cout << "Relative error for " << type_of_result << " is: " << relative_error << std::endl;
     if( relative_error < tolerance ) std::cout << type_of_result <<" calculation OK!" << std::endl;
     else std::cout << type_of_result <<" calculation WRONG!" << std::endl;
-    std::cout << "###############################\n" << std::endl;
+    ///std::cout << "###############################\n" << std::endl;
 }
 
 //------------------ Class member setter functions ------------------//
@@ -54,7 +54,9 @@ void statistics::calc_mean_sequential()
 
     /// Compute elapsed time
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    std::cout << "Sequential mean for N = " << m_data.size() << " float elements took " << elapsed_time << " microseconds!"<< std::endl; 
+
+    /// Record elapsed time
+    m_execution_time_mean_sequential = elapsed_time;
 }
 
 void statistics::calc_mean_parallel()
@@ -94,8 +96,9 @@ void statistics::calc_mean_parallel()
 
     /// Compute elapsed time
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    std::cout << "Parallel mean for N = " << m_data.size() << " float elements with " << possible_number_of_threads << " threads took "
-              << elapsed_time << " microseconds!"<< std::endl; 
+
+    /// Record elapsed time
+    m_execution_time_mean_parallel = elapsed_time;
 }
 
 void statistics::calc_deviation_sequential()
@@ -132,7 +135,9 @@ void statistics::calc_deviation_sequential()
 
     /// Compute elapsed time
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    std::cout << "Sequential deviation for N = " << N << " float elements took " << elapsed_time << " microseconds!"<< std::endl;
+
+    /// Record elapsed time
+    m_execution_time_deviation_sequential = elapsed_time;
 }
 
 void statistics::calc_deviation_parallel()
@@ -183,8 +188,9 @@ void statistics::calc_deviation_parallel()
 
     /// Compute elapsed time
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    std::cout << "Parallel deviation for N = " << N << " float elements with " << possible_number_of_threads << " threads took "
-              << elapsed_time << " microseconds!"<< std::endl; 
+    
+    /// Record elapsed time
+    m_execution_time_deviation_parallel = elapsed_time;
 }
 //------------------ Class member getter functions ------------------//
 
@@ -192,3 +198,8 @@ float statistics::mean_sequential(){ return m_mean_sequential;}
 float statistics::mean_parallel(){ return m_mean_parallel;}
 float statistics::deviation_sequential(){ return m_deviation_sequential;}
 float statistics::deviation_parallel(){ return m_deviation_parallel;}
+
+float statistics::exec_time_mean_sequential(){ return m_execution_time_mean_sequential;}
+float statistics::exec_time_mean_parallel(){ return m_execution_time_mean_parallel;}
+float statistics::exec_time_deviation_sequential(){ return m_execution_time_deviation_sequential;}
+float statistics::exec_time_deviation_parallel(){ return m_execution_time_deviation_parallel;}
