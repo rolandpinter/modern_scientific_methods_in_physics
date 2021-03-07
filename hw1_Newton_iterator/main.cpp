@@ -24,7 +24,7 @@ T_x0 Newton(T_f f, T_df df, T_stop stopping_crit, T_x0 x0, T_epsilon epsilon)
     return x1;
 }
 
-// Implement dummy function, its derivative, stopping criterion functions
+// Implement functions: dummy function, its derivative, stopping criterion function
 double f(double x){ return x*x - 612.0; }
 double df(double x) { return 2 * x; }
 bool stopping_criterion(double x0, double x1, double epsilon) { return abs(x1 - x0) > epsilon; }
