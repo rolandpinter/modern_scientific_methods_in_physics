@@ -19,3 +19,7 @@ This repository is for holding my assignments for a university course called Mod
 # hw1_Newton_iterator
 
 First short homework, performs Newton iteration with template functions
+
+# hw2_vector2
+
+Second short homework, template class for 2 dimensional vectors with some operations
