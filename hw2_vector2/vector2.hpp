@@ -71,10 +71,16 @@ vector2<T> operator/(vector2<T> const& u, T const& c){
     return vector2<T>{u.x / c, u.y / c};
 }
 
-// (5) Lenght of a given vector
+// (5.1) Lenght of a given vector
 template<typename T>
 double length(vector2<T> const& u){
     return {sqrt(u.x * u.x + u.y * u.y)};
+}
+
+// (5.2) Square of the lenght of a given vector
+template<typename T>
+double sqlength(vector2<T> const& u){
+    return double(u.x * u.x + u.y * u.y);
 }
 
 // (6) Dot product of two vectors and returning with result

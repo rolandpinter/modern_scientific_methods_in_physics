@@ -48,16 +48,20 @@ int main()
     double l = length(a);
     std::cout << "l = length(a): " << l << std::endl;
 
-    // Check 11: Dot product of two vectors and returning with result
+    // Check 11: Square of the length of a given vector
+    double ll = sqlength(a);
+    std::cout << "ll = sqlength(a): " << ll << std::endl;
+
+    // Check 12: Dot product of two vectors and returning with result
     auto dotP = dot(a,b);
     std::cout << "dotP = dot(a,b): " << dotP << std::endl;
 
-    // Check 12: Normalise a vector and returning with result
+    // Check 13: Normalise a vector and returning with result
     auto norm = normalise(a);
     std::cout << "norm = normalise(a): " << norm << std::endl;
 
-    // Check 13: Read vector components from standard input
-    vector2<int> inputVec{};
+    // Check 14: Read vector components from standard input
+    vector2<int> inputVec;
     std::cout << "Enter the two components of a two dimensional vector:" << std::endl;
     std::cin >> inputVec;
     std::cout << "inputVec: " << inputVec << std::endl;
