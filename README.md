@@ -23,3 +23,7 @@ First short homework, performs Newton iteration with template functions
 # hw2_vector2
 
 Second short homework, template class for 2 dimensional vectors with some operations
+
+# hw3_numerical_differentiation
+
+Third short homework, which is aimed to learn about numerical differentiation
