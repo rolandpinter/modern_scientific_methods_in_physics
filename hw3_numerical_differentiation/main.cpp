@@ -24,13 +24,10 @@ int main()
     const int a = 200;    // [a] = m
     const int h = 35;     // [h] = m
 
-    // Lower and upper limit of the integral
+    // Lower and upper limit of the integral, number of equidistant partitions, dx
     const double int_lower_limit = 0.0;
     const double int_upper_limit = 200.0;
-
-    // n for the "central integral": number of equidistant partition of the domain
     const int n = 10000;
-    // dx for the integrals
     double dx = (int_upper_limit - int_lower_limit) / n;
     
     // Vector to hold central x values for "central integral"
@@ -56,10 +53,10 @@ int main()
 
     // (2) Compute the length of the rope based on the trapesoidal rule
     double T = 0;
-    // first and last terms in the sum are only multiplied with 1, so I'm adding summing them before
+    // First and last terms in the sum are only multiplied with 1, so I'm adding summing them before
     T += sqrt(1 + (df(f, int_lower_limit, F, q, a, h, dx) * df(f, int_lower_limit, F, q, a, h, dx)) );
     T += sqrt(1 + (df(f, int_upper_limit, F, q, a, h, dx) * df(f, int_upper_limit, F, q, a, h, dx)) );
-    // all the others terms are multiplied with 2, so a for loop can be written
+    // All the others terms are multiplied with 2, so a for loop can be written
     for(int i = 1; i < n - 1; ++i){
         T += 2 *  sqrt(1 + (df(f, i*dx, F, q, a, h, dx) * df(f, i*dx, F, q, a, h, dx)) );
     }
