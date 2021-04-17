@@ -26,4 +26,8 @@ Second short homework, template class for 2 dimensional vectors with some operat
 
 # hw3_numerical_differentiation
 
-Third short homework, which is aimed to learn about numerical differentiation
+Third short homework, which is about numerical differentiation
+
+# hw4_diff_eq
+
+Fourth short homework, which is about numerical differential equation solving
