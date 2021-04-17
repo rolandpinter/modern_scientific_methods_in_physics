@@ -14,8 +14,12 @@ std::vector<double> Newton_method(double dt, unsigned int N, double y0, T f);
 template<typename T>
 std::vector<double> RK4_method(double dt, unsigned int N, double y0, T f);
 
+// Function to compute analytic solution, which is y(t) = tan(t) with the given initial condition
+std::vector<double> analytic_method(double dt, unsigned int N, double y0);
+
 // Function to dump results to csv file
-void dump_results(std::string filename, unsigned int N, double dt, std::vector<double> &Newton_results, std::vector<double> &RK4_results);
+void dump_results(std::string filename, unsigned int N, double dt, std::vector<double> &Newton_results,
+                  std::vector<double> &RK4_results, std::vector<double> &analytic_results);
 
 int main()
 {
@@ -26,9 +30,12 @@ int main()
     // Solve the given differential equation numerically
     std::vector<double> Newton_results = Newton_method(dt, N, y0, f);
     std::vector<double> RK4_results = RK4_method(dt, N, y0, f);
+    
+    // Compute the analytical solution, which is y(t) = tan(t)
+    std::vector<double> analytic_results = analytic_method(dt, N, y0);
 
     // Dump results to file
-    dump_results("../results.csv", N, dt, Newton_results, RK4_results);
+    dump_results("../results.csv", N, dt, Newton_results, RK4_results, analytic_results);
 
     return 0;
 }
@@ -74,19 +81,34 @@ std::vector<double> RK4_method(double dt, unsigned int N, double y0, T f)
     return RK4_results;
 }
 
+// Function to compute analytic solution, which is y(t) = tan(t) with the given initial condition
+std::vector<double> analytic_method(double dt, unsigned int N, double y0)
+{
+    std::vector<double> analytic_results(N); // Vector to hold analytic method results
+    analytic_results[0] = y0;                // t = 0 initial value given as y0
+
+    // Compute analytic results
+    for(unsigned int i = 1; i < N; ++i)
+        analytic_results[i] = tan(i*dt);
+
+    // Return the analytic results
+    return analytic_results;
+}
+
 // Function to dump results to csv file
-void dump_results(std::string filename, unsigned int N, double dt, std::vector<double> &Newton_results, std::vector<double> &RK4_results)
+void dump_results(std::string filename, unsigned int N, double dt, std::vector<double> &Newton_results,
+                  std::vector<double> &RK4_results, std::vector<double> &analytic_results)
 {
     // Open output file
     std::ofstream result_file;
     result_file.open(filename);
 
     // Write header row
-    result_file << "t,Newton_results,RK4_results\n";
+    result_file << "t,Newton_results,RK4_results,tan(t)\n";
 
     // Write the results
     for(unsigned int i = 0; i < N; ++i)
-        result_file << i * dt<< "," << Newton_results[i] << "," << RK4_results[i] << "\n";
+        result_file << i * dt<< "," << Newton_results[i] << "," << RK4_results[i] << "," << analytic_results[i] << "\n";
 
     // Close the file
     result_file.close();
